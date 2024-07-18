@@ -5,7 +5,7 @@
 
 */
 -- DropIndex
-DROP INDEX `Product_name_key` ON `product`;
+DROP INDEX `Product_name_key` ON `Product`;
 
 -- AlterTable
-ALTER TABLE `product` ADD COLUMN `short_name` VARCHAR(191) NOT NULL;
+ALTER TABLE `Product` ADD COLUMN `short_name` VARCHAR(191) NOT NULL;
