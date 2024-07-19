@@ -98,9 +98,7 @@ export function ProductCategory() {
   
   useEffect(() => {
     getProducts.mutate({ skip: (currentPage - 1)*6 , take : 6});
-    const oldEmail = localStorage.getItem('verificationProp');
-      getUser.mutate({ email : oldEmail})
-  }, [count]);
+  }, [userProducts]);
 
   const handlePageChange = (page) => { 
     setCurrentPage(page);
@@ -110,8 +108,13 @@ export function ProductCategory() {
     return userProducts.includes(productId);
   }
   const handleCheckboxChange =(productId, checked) => {
+    setUserProducts(prevProducts => {
+      const updatedProducts = prevProducts.includes(productId)
+        ? prevProducts.filter(id => id !== productId)
+        : [...prevProducts, productId];
+      return updatedProducts;
+    });
     if(checked) {
-      setUserProducts((prev) => [...prev, productId]);
       if(!userProducts.includes(productId)) {
         insertUserProduct.mutate({userId : userId, productId : productId});
       }
