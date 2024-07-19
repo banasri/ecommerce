@@ -104,6 +104,7 @@ const passwordHash = crypto.createHash('sha256').update(input.password).digest('
       where : {
         email: input.email,
       },
+      include: { products: true },
     });
     if (!user) {
       throw new Error('User does not exist');

@@ -10,9 +10,12 @@ import Pagination from "./pagination";
 export function ProductCategory() {
   const [error, setError] = useState<string | null>(null);
   const [ products, setProducts ] = useState([]);
+  const [ userProducts, setUserProducts ] = useState([]);
+  const [count, setCount] = useState(0);
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [ totalPages, setTotalPages] = useState(0);
+  const [ userId, setUserId] = useState(0);
   let itemPerPage = 6;
   const utils = api.useUtils();
   
@@ -32,6 +35,9 @@ export function ProductCategory() {
   const getUser = api.user.me.useMutation({
     onSuccess: async (res) => {
       console.log("usr res", res);
+      setUserId(res.id);
+      const productIds = res.products.map(obj => obj.productId);
+      setUserProducts(productIds);
     },
     onError: async (error) => {
       console.log(error);
@@ -42,6 +48,26 @@ export function ProductCategory() {
     onSuccess: async (res) => {
       console.log("products res", res);
       setProducts(res);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setError(error.message);
+    },
+    
+  });
+  const insertUserProduct = api.userproduct.insert.useMutation({
+    onSuccess: async (res) => {
+      console.log("products res", res);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setError(error.message);
+    },
+    
+  });
+  const deleteUserProduct = api.userproduct.delete.useMutation({
+    onSuccess: async (res) => {
+      console.log("products res", res);
     },
     onError: async (error) => {
       console.log(error);
@@ -63,23 +89,36 @@ export function ProductCategory() {
   useEffect(() => {
       getProductsAll.mutate({ });
       const oldEmail = localStorage.getItem('verificationProp');
-      getUser.mutate({ email : oldEmail});
-      // const token = getToken();
-      // if (token) {
-      //   const decodedToken = decodeToken(token);
-      //   if (decodedToken) {
-      //   console.log("decoded", decodedToken)
-      //   getUser.mutate({ email : decodedToken});
-      // }}
+      getUser.mutate({ email : oldEmail})
   }, []);
 
   useEffect(() => {
     getProducts.mutate({ skip: (currentPage - 1)*6 , take : 6});
   }, [currentPage]);
+  
+  useEffect(() => {
+    getProducts.mutate({ skip: (currentPage - 1)*6 , take : 6});
+    const oldEmail = localStorage.getItem('verificationProp');
+      getUser.mutate({ email : oldEmail})
+  }, [count]);
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page) => { 
     setCurrentPage(page);
   };
+
+  const checkItemSelected = (productId) => {
+    return userProducts.includes(productId);
+  }
+  const handleCheckboxChange =(productId, checked) => {
+    if(checked) {
+      setUserProducts((prev) => [...prev, productId]);
+      if(!userProducts.includes(productId)) {
+        insertUserProduct.mutate({userId : userId, productId : productId});
+      }
+    } else {
+      deleteUserProduct.mutate({userId : userId, productId : productId});
+    }
+  }
   return (
     <div className="w-full max-w-xs text-black">
       {error && <p>{error}</p>}
@@ -96,7 +135,7 @@ export function ProductCategory() {
         className="flex flex-col gap-2 mt-4">
           { 
             products.map((item, index) => {
-              return <div><input type="checkbox" key={item.id} id={item.id} name={item.name} value={item.name}>
+              return <div><input type="checkbox" key={item.id} id={item.id} name={item.name} value={item.name} onChange={(e) => handleCheckboxChange(item.id, e.target.checked)} checked={checkItemSelected(item.id)}>
               </input>
               <label htmlFor={item.id}> {item.name}</label><br></br></div>
             })
