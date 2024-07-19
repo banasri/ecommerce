@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { sendVerificationEmail } from "../../utils/emailService";
 import crypto from 'crypto';
+import { createToken } from '@/server/utils/auth';
 
 export const userRouter = createTRPCRouter({
   create : publicProcedure
@@ -90,9 +91,40 @@ const passwordHash = crypto.createHash('sha256').update(input.password).digest('
       throw new Error('Incorrect Password');
     }
     // Mark user as verified and clear the verification code
-    
-    return { message: 'Login successful' };
+    const userObj = { userId: user.id, email: user.email }
+    const token = createToken(user.email);
+    return token;
   }),
+  me : publicProcedure
+  .input(z.object({
+    email: z.string().email(),
+  }))
+  .mutation(async ({ ctx, input }) => {
+    const user = await ctx.db.user.findUnique({
+      where : {
+        email: input.email,
+      },
+    });
+    if (!user) {
+      throw new Error('User does not exist');
+    }
+    
+    return user;
+  }),
+  // .query(async ({ctx}) =>{
+  //   const token = localStorage.getItem("token");
+  //     if (!token) {
+  //       return null;
+  //     }
+  //     try {
+  //       const decoded = verifyToken(token) as { id: number };
+  //       const user = await ctx.db.user.findUnique({ where: { id: decoded.id } });
+
+  //       return user;
+  //     } catch {
+  //       return null;
+  //     }
+  // })
 })
  
   

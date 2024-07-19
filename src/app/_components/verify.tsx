@@ -11,7 +11,7 @@ const VerifyPage = () => {
   const [formData, setFormData] = useState(["", "", "", "", "", "", "", "" ]);
   const router = useRouter();
 
-  let emailLS: string = localStorage.getItem('verificationProp') || '';
+  let emailLS: string = localStorage?.getItem('verificationProp') || '';
   console.log("email from ls", emailLS);
   
   let emailLSParts = emailLS?.split('@');
@@ -22,7 +22,7 @@ const VerifyPage = () => {
 
   let obsEmail: string = "";
   obsEmail = emailLSParts?.[0]?.slice(0, 3) + "***@" + emailLSParts?.[1] || ""; 
-
+  
   const verifyEmail = api.user.verifyEmail.useMutation({
     onSuccess: async () => {
       setError(null);
@@ -53,7 +53,7 @@ const VerifyPage = () => {
   
   return (
 
-    <div className="w-full max-w-xs">
+    <div className="w-full max-w-xs text-black">
       <div className="flex flex-col gap-2">
        
       <div className="container mx-auto px-4 py-8">
@@ -64,19 +64,21 @@ const VerifyPage = () => {
       </p>
     {error && <p>{error}</p>}
       <div className="flex justify-center">
-        <form className="grid grid-cols-8 gap-4" onSubmit={(e) => {
+        <form onSubmit={(e) => {
           e.preventDefault();
           console.log("verification submitted");
           verifyEmail.mutate({ email :emailLS, verificationCode });
         }}
           >
+            <label>Code</label>
+            <div className="grid grid-cols-8 gap-4" >
           {formData.map((item, index) => (
           <input
             key={index} // Add a unique key for each input
             type="text"
             maxLength={1}
 	    value={item}
-            className="autotab w-full rounded-sm px-1 py-2 text-black"
+            className="autotab w-full rounded-sm px-1 py-2 border-2 border-black-500 text-black"
             
             onChange={(e) => {
 		console.log("in onChange digigt1");
@@ -96,10 +98,11 @@ const VerifyPage = () => {
 	    handleInputChange(index, e.target.value)}}
           />
         ))}
+        </div>
 
         
 <div className="flex justify-center mt-8">
-        <button type="submit" className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-700">Verify</button>
+        <button type="submit" className="w-full rounded-sm bg-black text-white mt-4 text-sm h-8">VERIFY</button>
       </div>
       
       

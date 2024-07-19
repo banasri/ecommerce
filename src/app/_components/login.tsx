@@ -18,6 +18,7 @@ export function Login() {
   const login = api.user.login.useMutation({
     onSuccess: async (res) => {
       setFormData(initialState);
+      console.log("token", res);
       localStorage.setItem('verificationProp', formData.email);
       router.push('/');
     },
@@ -39,34 +40,44 @@ export function Login() {
   });
 
   return (
-    <div className="w-full max-w-xs">
+    
+    <div className="w-full max-w-xs text-black">
       {error && <p>{error}</p>}
+      <div className="w-100 text-center mt-2">
+        <p className="font-bold">Login</p>
+        <p>Welcome back to ECOMMERCE</p>
+        <p className="text-xs">The next gen business marketplace</p>
+      </div>
       <form onSubmit={(e) => {
           e.preventDefault();
           login.mutate({ ...formData });
         }}
-        className="flex flex-col gap-2">
+        className="flex flex-col gap-2 mt-4">
+        <label htmlFor="email">Email</label>
         <input
           type="email"
-          placeholder="email"
+          placeholder="Enter"
+          id="email"
           value={formData.email}
           onChange={(e) => setFormData((prevVal) => { 
             return { ...prevVal, email: e.target.value}
           })}
-          className="w-full rounded-full px-4 py-2 text-black"
+          className="w-full rounded px-4 py-2 border-2 border-black-500 text-black"
         />
+        <label htmlFor="password">Password</label>
         <input
           type="password"
-          placeholder="password"
+          id="password"
+          placeholder="Enter"
           value={formData.password}
           onChange={(e) => setFormData((prevVal) => { 
             return { ...prevVal, password: e.target.value}
           })}
-          className="w-full rounded-full px-4 py-2 text-black"
+          className="w-full rounded px-4 py-2 border-2 border-black-500 text-black"
         />
         <button
           type="submit"
-          className="rounded-full bg-white/10 px-10 py-3 font-semibold transition hover:bg-white/20"
+          className="rounded-sm bg-black text-white mt-4 text-sm h-8"
           disabled={login.isPending}
         >
           {login.isPending ? "Logging in..." : "LOGIN"}
