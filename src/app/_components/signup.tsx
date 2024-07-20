@@ -78,8 +78,8 @@ export function Register() {
         >
           {createUser.isPending ? "Creating..." : "CREATE ACCOUNT"}
         </button>
-        <div className="w-100 text-center mt-2">
-        Have an account? <Link href="/login">Login</Link>
+      <div className="w-100 text-center mt-2 text-xs">
+      Have an account? <Link href="/login">LOGIN</Link>
       </div>
             
           </form>
