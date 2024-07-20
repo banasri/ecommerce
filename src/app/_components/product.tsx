@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { decodeToken, getToken } from "@/server/utils/auth";
 
 import { api } from "@/trpc/react";
 import Pagination from "./pagination";
@@ -40,8 +39,7 @@ export function ProductCategory() {
       setUserProducts(productIds);
     },
     onError: async (error) => {
-      console.log(error);
-      setError(error.message);
+      router.push('/login');
     },
   })
   const getProducts = api.product.getAll.useMutation({
@@ -77,18 +75,11 @@ export function ProductCategory() {
   });
 
   useEffect(() => {
-    const token = getToken();
-    if (token) {
-      const decodedToken = decodeToken(token);
-      if (decodedToken) {
-      console.log("decoded", decodedToken)
-      getUser.mutate({ email : decodedToken});
-    }}
-  }, [])
-
-  useEffect(() => {
       getProductsAll.mutate({ });
       const oldEmail = localStorage.getItem('verificationProp');
+      if(!oldEmail) {
+        router.push('/login');
+      }
       getUser.mutate({ email : oldEmail})
   }, []);
 
@@ -99,6 +90,7 @@ export function ProductCategory() {
   useEffect(() => {
     getProducts.mutate({ skip: (currentPage - 1)*6 , take : 6});
   }, [userProducts]);
+ 
 
   const handlePageChange = (page) => { 
     setCurrentPage(page);
@@ -130,7 +122,7 @@ export function ProductCategory() {
            <p className="text-xs">We will keep you notified.</p>
       </div>
       <div className="w-100 text-left mt-2">
-           <p className="text-sm">My saved interests!</p>
+           <p className="text-sm font-bold">My saved interests!</p>
       </div>
       <form onSubmit={(e) => {
           e.preventDefault();
@@ -138,7 +130,7 @@ export function ProductCategory() {
         className="flex flex-col gap-2 mt-4">
           { 
             products.map((item, index) => {
-              return <div><input type="checkbox" key={item.id} id={item.id} name={item.name} value={item.name} onChange={(e) => handleCheckboxChange(item.id, e.target.checked)} checked={checkItemSelected(item.id)}>
+              return <div><input type="checkbox" key={item.id} id={item.id} name={item.name} value={item.name} onChange={(e) => handleCheckboxChange(item.id, e.target.checked)} checked={checkItemSelected(item.id)} className={checkItemSelected(item.id)? "w-4 h-4 bg-gray-500" : "w-4 h-4 bg-black text-white"}>
               </input>
               <label htmlFor={item.id}> {item.name}</label><br></br></div>
             })

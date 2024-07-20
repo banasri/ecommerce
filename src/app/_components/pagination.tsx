@@ -36,7 +36,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         <button
           onClick={() => onPageChange(1)}
           disabled={isFirstPage}
-          className={`px-3 py-1 ${
+          className={`px-2 py-1 ${
             isFirstPage ? 'text-gray-500 cursor-not-allowed' : 'text-black-500 hover:text-black-700 cursor-pointer'
           }`}
         >
@@ -45,7 +45,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={isFirstPage}
-          className={`px-3 py-1 ${
+          className={`px-2 py-1 ${
             isFirstPage ? 'text-gray-500 cursor-not-allowed' : 'text-black-500 hover:text-black-700 cursor-pointer'
           }`}
         >
@@ -57,7 +57,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           <button
             key={page}
             onClick={() => onPageChange(page)}
-            className={`px-3 py-1 ${
+            className={`px-2 py-1 ${
               page === currentPage ? 'text-black-500 hover:text-black-700 font-bold' : 'text-black-500 hover:text-black-700'
             }`}
           >
@@ -69,7 +69,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={isLastPage}
-          className={`px-3 py-1 ${
+          className={`px-2 py-1 ${
             isLastPage ? 'text-gray-500 cursor-not-allowed' : 'text-black-500 hover:text-black-700 cursor-pointer'
           }`}
         >
@@ -78,7 +78,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={isLastPage}
-          className={`px-3 py-1 ${
+          className={`px-2 py-1 ${
             isLastPage ? 'text-gray-500 cursor-not-allowed' : 'text-black-500 hover:text-black-700 cursor-pointer'
           }`}
         >

@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { sendVerificationEmail } from "../../utils/emailService";
 import crypto from 'crypto';
-import { createToken } from '@/server/utils/auth';
 
 export const userRouter = createTRPCRouter({
   create : publicProcedure
@@ -90,10 +89,8 @@ const passwordHash = crypto.createHash('sha256').update(input.password).digest('
     if(passwordHash != user.passwordHash){
       throw new Error('Incorrect Password');
     }
-    // Mark user as verified and clear the verification code
-    const userObj = { userId: user.id, email: user.email }
-    const token = createToken(user.email);
-    return token;
+  
+    return { message: 'Login successful' };
   }),
   me : publicProcedure
   .input(z.object({

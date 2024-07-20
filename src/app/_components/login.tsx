@@ -18,9 +18,9 @@ export function Login() {
   const login = api.user.login.useMutation({
     onSuccess: async (res) => {
       setFormData(initialState);
-      console.log("token", res);
+      console.log("message", res);
       localStorage.setItem('verificationProp', formData.email);
-      router.push('/');
+      router.push('/product');
     },
     onError: async (error) => {
       console.log(error);
@@ -82,8 +82,9 @@ export function Login() {
         >
           {login.isPending ? "Logging in..." : "LOGIN"}
         </button>
-        <div className="w-100 text-center mt-2">
-        Don't have an account? <Link href="/">Signup</Link>
+        <hr className="border-gray mt-2" />
+        <div className="w-100 text-center mt-2 text-xs">
+        Don't have an account? <Link href="/">SIGN UP</Link>
       </div>
             
           </form>
